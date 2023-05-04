@@ -3,6 +3,7 @@ const existFavorito = (id: number): boolean => {
   let favoritos: number[] = JSON.parse(
     localStorage.getItem("favoritos") || "[]"
   );
+
   return favoritos.includes(id);
 };
 

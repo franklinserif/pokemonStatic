@@ -22,7 +22,7 @@ const PokemonPage: NextPage<Props> = ({ pokemon }: Props) => {
     localFavoritos.toggleFavoritos(pokemon.id);
     setIsFavorito(!isFavorito);
 
-    if (!isFavorito) return;
+    if (isFavorito) return;
 
     confetti({
       zIndex: 999,
@@ -68,10 +68,10 @@ const PokemonPage: NextPage<Props> = ({ pokemon }: Props) => {
                 <Button
                   color="gradient"
                   auto
-                  bordered={isFavorito}
+                  bordered={!isFavorito}
                   onPress={handleToggleFavoritos}
                 >
-                  {!isFavorito ? "En Favoritos" : "Guardar en Favoritos"}
+                  {isFavorito ? "En Favoritos" : "Guardar en Favoritos"}
                 </Button>
               </Card.Header>
               <Card.Body>
