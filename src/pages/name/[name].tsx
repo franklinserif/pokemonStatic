@@ -23,7 +23,7 @@ const PokemonByNamePage: NextPage<Props> = ({ pokemon }: Props) => {
 
     setIsFavorito(!isFavorito);
 
-    if (!isFavorito) return;
+    if (isFavorito) return;
 
     confetti({
       zIndex: 999,
@@ -36,8 +36,6 @@ const PokemonByNamePage: NextPage<Props> = ({ pokemon }: Props) => {
       },
     });
   };
-
-  console.log("isFavorito: ", isFavorito);
 
   return (
     <Layout title={pokemon.name}>
@@ -69,10 +67,10 @@ const PokemonByNamePage: NextPage<Props> = ({ pokemon }: Props) => {
                 <Button
                   color="gradient"
                   auto
-                  bordered={isFavorito}
+                  bordered={!isFavorito}
                   onPress={handleToggleFavoritos}
                 >
-                  {!isFavorito ? "En Favoritos" : "Guardar en Favoritos"}
+                  {isFavorito ? "En Favoritos" : "Guardar en Favoritos"}
                 </Button>
               </Card.Header>
               <Card.Body>
@@ -117,15 +115,27 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
 
   return {
     paths: data.results.map((pokemon) => ({ params: { name: pokemon.name } })),
-    fallback: false,
+    fallback: "blocking",
   };
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { name } = params as { name: string };
 
+  const pokemon = await getPokemonInfo(name);
+
+  if (!pokemon) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
   return {
-    props: { pokemon: await getPokemonInfo(name) },
+    props: { pokemon },
+    revalidate: 86400,
   };
 };
 
